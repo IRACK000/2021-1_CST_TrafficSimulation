@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ### Alias : 4th_OOP_Project/class/bridge.py & Last Modded : 2021.05.10. ###
-Coded with Python 3.9 for Windows (CRLF) by 이현
+Coded with Python 3.9 for Windows (CRLF)
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 import os
 import sys
