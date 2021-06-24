@@ -1,0 +1,86 @@
+# -*- coding: utf-8 -*-
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+### Alias : console.keyboard & Last Modded : 2021.05.05. ###
+Coded with Python 3.9 for Windows (CRLF) by IRACK000
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from util import ConsoleAPI as cs
+import console.showboard as sb
+import sockets.logserver as log
+import classes.traffic
+
+from threading import Thread  # https://monkey3199.github.io/develop/python/2018/12/04/python-pararrel.html
+
+
+keyboardinput = None
+forcestop: bool = True
+
+
+def watchdog():
+    global keyboardinput
+    keyboardinput = cs.getch(forcestop_method=watchdog_forcestop)
+
+
+def watchdog_forcestop():
+    global forcestop
+    forcestop = True
+    print("\u001B[6n", end='', flush=True)
+    while True:
+        c = cs.gc.getch()
+        if type(c) != str:
+            c = c.decode('utf-8')
+        if c == 'R' or c == 'n':
+            break
+    wdog.join()
+
+
+def interrupt():
+    global keyboardinput
+    global forcestop
+    global wdog
+    tr = classes.traffic.CNU_TrafficSystem()
+    while True:
+        while keyboardinput is None:
+            if forcestop:
+                forcestop = False
+                wdog = Thread(target=watchdog, args=())
+                wdog.start()
+        c = keyboardinput.decode('utf-8')
+        keyboardinput = None
+        if c == 'q':
+            exit()
+        elif c == 'n':
+            tr.nextsignal()
+            sb.print_trafficsystem(tr.getstatus())
+        elif c == 'l':
+            if log.logging:
+                log.open()
+            else:
+                log.close()
+
+
+def run():
+    global thread
+    thread = Thread(target=interrupt, args=())
+    thread.start()
+
+
+def stop():
+    wdog.join()
+    thread.join()
+
+
+def test():
+    run()
+    for i in range(500000):
+        pass
+    print(cs.input("안녕하세요? : ", True))
+    stop()
+    cs.pause()
+
+
+if __name__ == '__main__':
+    test()
